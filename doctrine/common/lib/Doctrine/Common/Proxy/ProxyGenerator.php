@@ -1023,7 +1023,10 @@ EOT;
         \ReflectionMethod $method,
         \ReflectionParameter $parameter = null
     ) {
-        $name      = (string) $type;
+      $oldReporting = error_reporting();
+      error_reporting($oldReporting & ~E_DEPRECATED);
+      $name      = (string) $type;
+      error_reporting($oldReporting);
         $nameLower = strtolower($name);
 
         if ('self' === $nameLower) {
