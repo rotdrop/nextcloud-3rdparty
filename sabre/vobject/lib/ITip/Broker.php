@@ -183,6 +183,7 @@ class Broker
         }
 
         $userHref = (array) $userHref;
+        $userHref = array_map(fn($href) => rawurldecode($href), $userHref);
 
         if (!is_null($calendar)) {
             if (is_string($calendar)) {
