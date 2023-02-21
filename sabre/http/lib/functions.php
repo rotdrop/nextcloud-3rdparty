@@ -373,7 +373,15 @@ function parseMimeType(string $str): array
  */
 function encodePath(string $path): string
 {
-    return preg_replace_callback('/([^A-Za-z0-9_\-\.~\(\)\/:@])/', function ($match) {
+    $allowedChars = 'A-Za-z0-9_\-\.~\(\)\/:@';
+    if (str_starts_with($path, 'mailto:')) {
+        // So this is then not a path, but an URI. Per RFC 6068
+        // plus-signs need not be encoded, so better don't, as all
+        // over the code URIs are compared with email addresses which
+        // may contain unencoded plus-signs.
+        $allowedChars .= '+';
+    }
+    return preg_replace_callback('/([^' . $allowedChars . '])/', function ($match) {
         return '%'.sprintf('%02x', ord($match[0]));
     }, $path);
 }

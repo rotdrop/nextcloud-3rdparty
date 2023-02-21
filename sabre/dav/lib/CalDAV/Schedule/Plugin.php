@@ -750,9 +750,10 @@ class Plugin extends ServerPlugin
 
         $uas = $caldavNS.'calendar-user-address-set';
         $props = $this->server->getProperties($owner, [$uas]);
+        $uas = array_map(fn($href) => rawurldecode($href), $props[$uas] ? $props[$uas]->getHrefs() : []);
 
-        if (empty($props[$uas]) || !in_array($organizer, $props[$uas]->getHrefs())) {
-            throw new Forbidden('The organizer in the request did not match any of the addresses for the owner of this inbox');
+        if (!in_array($organizer, $uas)) {
+            throw new Forbidden('The organizer "' . $organizer . '" in the request did not match any of the addresses for the owner of this inbox');
         }
 
         if (!isset($vFreeBusy->ATTENDEE)) {
