@@ -226,7 +226,10 @@ class EventDispatcher implements EventDispatcherInterface
                 // it is just not acceptable in such a heterogeneous infra
                 // structure like NC that one badly designed listener stops all
                 // others.
-                \OC::$server->get(\OCP\ILogger::class)->logException(new Exception('Exception during event dispatch', 0, $t));
+                \OC::$server->get(\Psr\Log\LoggerInterface::class)->error(
+                    'Exception during event dispatch',
+                    [ 'exception' => new \Exception('Exception during event dispatch', 0, $t) ],
+                );
             }
         }
     }
